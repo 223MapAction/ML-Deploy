@@ -39,7 +39,7 @@
                                 <a href=".." class="nav-link">Welcom</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../install.md" class="nav-link">Install and run</a>
+                                <a href="../install-run/" class="nav-link">Install and run</a>
                             </li>
                             <li class="nav-item">
                                 <a href="../system-arch/" class="nav-link">System Arch</a>
@@ -57,7 +57,7 @@
                                 <a href="../models/" class="nav-link">Pydantic model</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../contrubition-guiline.md" class="nav-link">contrubition guideline</a>
+                                <a href="../contribution-guideline/" class="nav-link">contrubition guideline</a>
                             </li>
                         </ul>
 
@@ -95,7 +95,7 @@
               </ul>
             </li>
             
-            <li class="nav-item" data-bs-level="2"><a href="#apis.main_router.predict_incident_type" class="nav-link">predict_incident_type</a>
+            <li class="nav-item" data-bs-level="2"><a href="#apis.main_router.prediction_endpoint" class="nav-link">prediction_endpoint</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -160,15 +160,15 @@
 
             <details class="quote">
               <summary>Source code in <code>app/apis/main_router.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a greeting message indicating the API is operational.</span>
@@ -186,8 +186,8 @@
 <div class="doc doc-object doc-function">
 
 
-<h2 id="apis.main_router.predict_incident_type" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">predict_incident_type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></code>
+<h2 id="apis.main_router.prediction_endpoint" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">prediction_endpoint</span><span class="p">(</span><span class="n">websocket</span><span class="p">)</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -198,8 +198,7 @@
 
     <div class="doc doc-contents ">
 
-      <p>Receives an image as input and predicts the type of incident depicted in the image.
-Additionally, it fetches contextual information based on the prediction and stores the results in a database.</p>
+      <p>WebSocket endpoint for predicting incident type based on an image.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -214,39 +213,17 @@ Additionally, it fetches contextual information based on the prediction and stor
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>data</code></td>
+            <td><code>websocket</code></td>
             <td>
-                  <code><span title="apis.models.ImageModel">ImageModel</span></code>
+                  <code><span title="fastapi.WebSocket">WebSocket</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The image data received from the client, which includes the image path, sensitivity of structures in the image, and an incident ID.</p>
+                <p>The WebSocket connection.</p>
               </div>
             </td>
             <td>
                 <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>JSONResponse</code></td>            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A JSON response containing the prediction, probabilities of each predicted class, contextual information, impact analysis, and proposed solutions.</p>
-              </div>
             </td>
           </tr>
       </tbody>
@@ -264,11 +241,33 @@ Additionally, it fetches contextual information based on the prediction and stor
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="fastapi.HTTPException">HTTPException</span></code>
+                  <code><span title="fastapi.WebSocketDisconnect">WebSocketDisconnect</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>An error response with status code 500 if the image could not be fetched or if there is an issue during processing.</p>
+                <p>If the WebSocket connection is disconnected.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>None</p>
               </div>
             </td>
           </tr>
@@ -277,123 +276,145 @@ Additionally, it fetches contextual information based on the prediction and stor
 
             <details class="quote">
               <summary>Source code in <code>app/apis/main_router.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/image/predict&#39;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">predict_incident_type</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageModel</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">websocket</span><span class="p">(</span><span class="s1">&#39;ws/image/predict&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">prediction_endpoint</span><span class="p">(</span><span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Receives an image as input and predicts the type of incident depicted in the image.</span>
-<span class="sd">    Additionally, it fetches contextual information based on the prediction and stores the results in a database.</span>
+<span class="sd">    WebSocket endpoint for predicting incident type based on an image.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data (ImageModel): The image data received from the client, which includes the image path, sensitivity of structures in the image, and an incident ID.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        JSONResponse: A JSON response containing the prediction, probabilities of each predicted class, contextual information, impact analysis, and proposed solutions.</span>
+<span class="sd">        websocket (WebSocket): The WebSocket connection.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        HTTPException: An error response with status code 500 if the image could not be fetched or if there is an issue during processing.</span>
+<span class="sd">        WebSocketDisconnect: If the WebSocket connection is disconnected.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">origin</span> <span class="o">=</span> <span class="n">websocket</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;origin&#39;</span><span class="p">)</span>
+    <span class="n">allowed_origins</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://localhost:5432&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">origin</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_origins</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">WS_1008_POLICY_VIOLATION</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">websocket</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Extract data from ImageModel</span>
-        <span class="n">image_path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">image_name</span>  <span class="c1"># Use the correct field name here</span>
-        <span class="n">sensitive_structures</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sensitive_structures</span>
-        <span class="n">incident_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">incident_id</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
 
-        <span class="c1"># Fetch image and preprocess it</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_url</span> <span class="o">+</span> <span class="n">image_path</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Failed to fetch image from </span><span class="si">{</span><span class="n">base_url</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">image_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">image</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">receive_json</span><span class="p">()</span>
+            <span class="n">image_path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image_name&#39;</span><span class="p">)</span>
+            <span class="n">sensitive_structures</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sensitive_structures&#39;</span><span class="p">)</span>
+            <span class="n">incident_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;incident_id&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Perform prediction and contextualization</span>
-        <span class="n">prediction_task</span> <span class="o">=</span> <span class="n">perform_prediction</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-        <span class="n">prediction</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="k">await</span> <span class="n">prediction_task</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_url</span> <span class="o">+</span> <span class="n">image_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Failed to fetch image from </span><span class="si">{</span><span class="n">base_url</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">image_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">context_task</span> <span class="o">=</span> <span class="n">fetch_contextual_information</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">sensitive_structures</span><span class="p">)</span>
-        <span class="n">get_context</span><span class="p">,</span> <span class="n">impact</span><span class="p">,</span> <span class="n">piste_solution</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context_task</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
 
-        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">        INSERT INTO &quot;Mapapi_prediction&quot; (incident_id, piste_solution, impact_potentiel, context)</span>
-<span class="s2">        VALUES (:incident_id, :piste_solution, :impact_potentiel, :context);</span>
-<span class="s2">        &quot;&quot;&quot;</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;incident_id&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">incident_id</span><span class="p">,</span>
-            <span class="s2">&quot;piste_solution&quot;</span><span class="p">:</span> <span class="n">piste_solution</span><span class="p">,</span>
-            <span class="s2">&quot;impact_potentiel&quot;</span><span class="p">:</span> <span class="n">impact</span><span class="p">,</span>
-            <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">get_context</span>
-        <span class="p">}</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">database</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+            <span class="c1"># Perform prediction</span>
+            <span class="n">prediction</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 
-        <span class="c1"># Return JSON response</span>
-        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;prediction&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">,</span>
-            <span class="s2">&quot;probabilities&quot;</span><span class="p">:</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-            <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">get_context</span><span class="p">,</span>
-            <span class="s2">&quot;in_depht&quot;</span><span class="p">:</span> <span class="n">impact</span><span class="p">,</span>
-            <span class="s2">&quot;piste_solution&quot;</span><span class="p">:</span> <span class="n">piste_solution</span>
-        <span class="p">})</span>
+            <span class="c1"># Fetch contextual information, impact, and solution</span>
+            <span class="n">get_context</span> <span class="o">=</span> <span class="n">get_response</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;What is a </span><span class="si">{</span><span class="n">prediction</span><span class="si">}</span><span class="s2"> in an African zone?&quot;</span><span class="p">)</span>
+            <span class="n">impact</span> <span class="o">=</span> <span class="n">get_response</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;What is the impact of </span><span class="si">{</span><span class="n">prediction</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">sensitive_structures</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">piste_solution</span> <span class="o">=</span> <span class="n">get_response</span><span class="p">(</span><span class="s2">&quot;What are the possible solutions for the previous case? Assuming it&#39;s managed by a local community.&quot;</span><span class="p">)</span>
 
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">             INSERT INTO &quot;Mapapi_prediction&quot; (incident_id, incident_type, piste_solution, impact_potentiel, context)</span>
+<span class="s2">             VALUES (:incident_id, :incident_type :piste_solution, :impact_potentiel, :context);</span>
+<span class="s2">             &quot;&quot;&quot;</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">{</span>
+                 <span class="s2">&quot;incident_id&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">incident_id</span><span class="p">,</span>
+                 <span class="s2">&quot;incideent_type&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">,</span>
+                 <span class="s2">&quot;piste_solution&quot;</span><span class="p">:</span> <span class="n">piste_solution</span><span class="p">,</span>
+                 <span class="s2">&quot;impact_potentiel&quot;</span><span class="p">:</span> <span class="n">impact</span><span class="p">,</span>
+                 <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">get_context</span>
+             <span class="p">}</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">database</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="c1"># Send the result back to the client</span>
+            <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send_json</span><span class="p">({</span>
+                <span class="s2">&quot;prediction&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">,</span>
+                <span class="s2">&quot;probabilities&quot;</span><span class="p">:</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">get_context</span><span class="p">,</span>
+                <span class="s2">&quot;in_depth&quot;</span><span class="p">:</span> <span class="n">impact</span><span class="p">,</span>
+                <span class="s2">&quot;piste_solution&quot;</span><span class="p">:</span> <span class="n">piste_solution</span>
+            <span class="p">})</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="c1"># Handle exceptions and return appropriate HTTP response</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="c1"># Handle exceptions and close the WebSocket connection</span>
+        <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">WS_1002_PROTOCOL_ERROR</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

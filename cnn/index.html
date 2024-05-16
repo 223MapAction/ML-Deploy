@@ -39,7 +39,7 @@
                                 <a href=".." class="nav-link">Welcom</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../install.md" class="nav-link">Install and run</a>
+                                <a href="../install-run/" class="nav-link">Install and run</a>
                             </li>
                             <li class="nav-item">
                                 <a href="../system-arch/" class="nav-link">System Arch</a>
@@ -57,7 +57,7 @@
                                 <a href="../models/" class="nav-link">Pydantic model</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../contrubition-guiline.md" class="nav-link">contrubition guideline</a>
+                                <a href="../contribution-guideline/" class="nav-link">contrubition guideline</a>
                             </li>
                         </ul>
 
@@ -548,7 +548,7 @@ probability distribution over all categories.</p>
         <span class="n">predicted_class</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Determine the predicted class</span>
 
         <span class="n">predict_label_index</span> <span class="o">=</span> <span class="n">predicted_class</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-        <span class="n">predict_label</span> <span class="o">=</span> <span class="n">categories</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">predict_label_index</span><span class="p">)]</span>  <span class="c1"># Get the category name from the index</span>
+        <span class="n">predict_label</span> <span class="o">=</span> <span class="n">categories</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">predict_label_index</span><span class="p">)]</span><span class="c1"># Get the category name from the index</span>
 
         <span class="k">return</span> <span class="n">predict_label</span><span class="p">,</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>  <span class="c1"># Return the predicted category and probabilities</span>
 </code></pre></div></td></tr></table></div>

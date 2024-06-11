@@ -1,6 +1,5 @@
 import os
 from openai import OpenAI
-from app.config.database import *
 
 # Initialize the OpenAI client with an API key from environment variables
 client = OpenAI(
@@ -45,7 +44,7 @@ def get_assistant_response(messages):
         print(f"An error occurred: {e}")
         return "Sorry, I can't process your request right now."
 
-async def get_response(prompt: str, session_id):
+def get_response(prompt: str):
     """
     Processes a user's prompt to generate and display the assistant's response using the OpenAI GPT model.
     
@@ -61,18 +60,6 @@ async def get_response(prompt: str, session_id):
     # Get the assistant's response and add it to the chat history
     response = get_assistant_response(messages)
     messages.append({"role": "assistant", "content": response})
-    
-    insert_query = """
-    INSERT INTO "Mapapi_chathistory" (session_id, question, answer)
-    VALUES (:session_id, :question, :answer)
-    """
-    insert_values = {
-        "session_id": session_id,
-        "question": prompt,
-        "answer": response,
-    }
-    
-    await database.execute(query=insert_query, values=insert_values)
     
     # Display the updated chat history
     display_chat_history(messages)

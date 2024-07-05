@@ -19,11 +19,11 @@ jobs:
         docker-compose -f _ci_pipeline.yml up --build -d
 
     - name: Run Tests
-        run:|
+        run: |
           docker-compose -f _ci_pipeline.yml run --rm testing || true
 
     - name: Copy Coverage Report
-        run:|
+        run: |
           container_id=$(docker-compose -f _ci_pipeline.yml ps -q testing)
           docker cp $container_id:/app/coverage/coverage.xml .
 

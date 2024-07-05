@@ -3,10 +3,11 @@ version: '3'
 services:
 
     testing:
-      container_name: CI
+      container_name: CI Testing
       build:
         context: .
         dockerfile: Dockerfile.CI
+      command: ["pytest", "-n", "auto", "--asyncio-mode=auto", "--cov=.", "--cov-report=xml:/app/coverage/coverage.xml", "--cov-report=term-missing"]
       env_file:
         - ~/.cv_deploy.env
       volumes:

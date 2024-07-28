@@ -5,7 +5,7 @@ from ..cnn.cnn_preprocess import preprocess_image
 from ..cnn.cnn_model import m_a_model
 
 # Initialize the VGG16 model with batch-normalized weights for 6 classes
-model = m_a_model(6)
+model = m_a_model(7)
 
 # Load the state dict from a pre-trained model
 state_dict_path = os.environ.get('MODEL_PATH', 'cv_model/TCM1.pth')
@@ -25,12 +25,12 @@ model_dict.update(pretrained_dict)
 model.load_state_dict(model_dict)
 
 # Modify the classifier to match the number of classes (6 in this case)
-num_classes = 6
-model.classifier[6] = nn.Linear(model.classifier[6].in_features, num_classes)
+num_classes = 7
+model.classifier[7] = nn.Linear(model.classifier[6].in_features, num_classes)
 
 # List of categories for prediction
-categories = ["Caniveau bouché", "Déchets solides", "Déchets solides dans les caniveaux",
-              "Pollution de l’eau (matière en suspension)", "Pollution de l’eau (présence de déchets plastiques)", "Sol aride"]
+categories = ["Caniveau obstrué", "Déchet dans l'eau", "Déchet solide", "Déforestation", "Pollution dans l'eau", "Sécheresse",
+              "Sol dégradé"]
 
 
 def predict(image):

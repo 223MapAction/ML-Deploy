@@ -8,7 +8,8 @@ from ..cnn.cnn_model import m_a_model
 model = m_a_model(7)
 
 # Load the state dict from a pre-trained model
-state_dict_path = os.environ.get('MODEL_PATH', 'cv_model/TCM1.pth')
+# state_dict_path = os.environ.get('MODEL_PATH', 'cv_model/TCM1.pth')
+state_dict_path = 'cv_model/TCM1.pth'
 
 if not os.path.isfile(state_dict_path):
     raise FileNotFoundError(f"Model file not found at {state_dict_path}")

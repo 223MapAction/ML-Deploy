@@ -13,6 +13,6 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
 
-      - name: Test with pytest
+      - name: Deployment
         run: |
           docker-compose -f _cd_pipeline.yaml up --build -d

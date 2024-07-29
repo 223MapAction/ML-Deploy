@@ -19,13 +19,13 @@ loaded_state_dict = torch.load(state_dict_path)
 # Adjust the model to ensure compatibility with the loaded state dict
 model_dict = model.state_dict()
 pretrained_dict = {k: v for k, v in loaded_state_dict.items(
-) if k in model_dict and 'classifier.6' not in k}
+) if k in model_dict and 'classifier.7' not in k}
 
 # Update the model's state dictionary except the classifier's final layer
 model_dict.update(pretrained_dict)
 model.load_state_dict(model_dict)
 
-# Modify the classifier to match the number of classes (6 in this case)
+# Modify the classifier to match the number of classes (7 in this case)
 num_classes = 7
 model.classifier[7] = nn.Linear(model.classifier[7].in_features, num_classes)
 

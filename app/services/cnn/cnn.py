@@ -27,7 +27,7 @@ model.load_state_dict(model_dict)
 
 # Modify the classifier to match the number of classes (6 in this case)
 num_classes = 7
-model.classifier[7] = nn.Linear(model.classifier[6].in_features, num_classes)
+model.classifier[7] = nn.Linear(model.classifier[7].in_features, num_classes)
 
 # List of categories for prediction
 categories = ["Caniveau obstrué", "Déchet dans l'eau", "Déchet solide", "Déforestation", "Pollution dans l'eau", "Sécheresse",

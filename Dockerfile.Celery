@@ -1,17 +1,12 @@
 # Dockerfile for Celery Worker
+
 FROM python:3.10.13-bookworm
 
 WORKDIR /app
-
-# Copy the current directory contents into the container at /app
 COPY . /app
-
 ENV PYTHONDONTWRITEBYCODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
 
-# Command to run the Celery worker
-CMD ["celery", "-A", "app.services.celery.celery_task", "worker", "--loglevel=info"]
+RUN pip install -r requirements.txt

@@ -1,12 +1,17 @@
 from fastapi import FastAPI
-from app.apis import main_router
 from fastapi.middleware.cors import CORSMiddleware
-from .database import *
+from app.apis import main_router
+from .database import database
+from contextlib import asynccontextmanager
 
-app = FastAPI()
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await database.connect()
+    yield
+    await database.disconnect()
 
-
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,14 +20,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.on_event("startup")
-async def startup():
-    await database.connect()
-
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
-    
 
 app.include_router(main_router.router, prefix="/api1", tags=["api1"])

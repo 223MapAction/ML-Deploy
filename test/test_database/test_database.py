@@ -1,8 +1,9 @@
 import pytest
+import os
 from databases import Database
 
-postgres_url = "postgresql://root:postges@139.144.63.238/mapaction"
-# postgres_url = "postgresql://postgres:postges@localhost/mapaction"
+postgres_url = os.environ.get("DATABASE_URL")
+
 database = Database(postgres_url)
 
 

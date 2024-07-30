@@ -1,7 +1,6 @@
-version: '3'
+version: "3"
 
 services:
-
   fastapi-app:
     container_name: cvdeploy
     build: .
@@ -13,7 +12,7 @@ services:
       micro-services-network:
         ipv4_address: 192.168.0.10
     restart: always
-  
+
   redis:
     image: "redis:latest"
     ports:
@@ -21,9 +20,9 @@ services:
     volumes:
       - ~/redis_data:/data
     networks:
-        micro-services-network:
-          ipv4_address: 192.168.0.7
-  
+      micro-services-network:
+        ipv4_address: 192.168.0.7
+
   worker:
     container_name: celery_workers
     build:
@@ -36,11 +35,10 @@ services:
       - redis
       - fastapi-app
     networks:
-        micro-services-network:
-          ipv4_address: 192.168.0.8
+      micro-services-network:
+        ipv4_address: 192.168.0.8
     volumes:
       - ~/celery_store1:/celery-data
-
 
 networks:
   micro-services-network:

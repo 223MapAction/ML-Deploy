@@ -2,33 +2,31 @@ name: Testing
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["md-branch"]
 
 jobs:
   build:
-
     runs-on: self-hosted
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
 
-    - name: Test with pytest
-      run: |
-        docker-compose -f _ci_pipeline.yml up --build -d
+      - name: Test with pytest
+        run: |
+          docker-compose -f _ci_pipeline.yml up --build -d
 
-    - name: Run Tests
-      run: |
+      - name: Run Tests
+        run: |
           docker-compose -f _ci_pipeline.yml run --rm testing || true
 
-    - name: Copy Coverage Report
-      run: |
+      - name: Copy Coverage Report
+        run: |
           container_id=$(docker-compose -f _ci_pipeline.yml ps -q testing)
           docker cp $container_id:/app/coverage/coverage.xml .
 
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4.0.1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

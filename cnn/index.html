@@ -292,11 +292,66 @@ that expect input images of size 224x224 pixels and images in tensor format.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Initializes and modifies a VGG16 model with batch normalization to classify a specified number of classes.</p>
+      <p>Initializes and modifies a VGG16 model with batch normalization to classify a specified number of classes.
+This function loads a pretrained VGG16 model, freezes its parameters to prevent further training of the feature extractor layers,
+and then adapts the classifier part of the model to the specified number of classes for new training tasks.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>num_classes</code></td>
+            <td>
+                  <code>int</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The number of target classes for the model to classify.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>torch.nn.Module: A PyTorch model configured for the specified number of classes with all parameters of the
+             feature extractor layers frozen and the classifier layers tailored to the target task.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
             <details class="quote">
               <summary>Source code in <code>app/services/cnn/cnn_model.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 5</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 4</span>
+<span class="normal"> 5</span>
 <span class="normal"> 6</span>
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
@@ -314,9 +369,26 @@ that expect input images of size 224x224 pixels and images in tensor format.</p>
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
-<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">m_a_model</span><span class="p">(</span><span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">m_a_model</span><span class="p">(</span><span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initializes and modifies a VGG16 model with batch normalization to classify a specified number of classes.</span>
+<span class="sd">    This function loads a pretrained VGG16 model, freezes its parameters to prevent further training of the feature extractor layers,</span>
+<span class="sd">    and then adapts the classifier part of the model to the specified number of classes for new training tasks.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        num_classes (int): The number of target classes for the model to classify.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.nn.Module: A PyTorch model configured for the specified number of classes with all parameters of the</span>
+<span class="sd">                         feature extractor layers frozen and the classifier layers tailored to the target task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Load VGG16 model with batch normalization weights</span>
     <span class="n">vgg16_bn_weights</span> <span class="o">=</span> <span class="n">VGG16_BN_Weights</span><span class="o">.</span><span class="n">DEFAULT</span>
@@ -327,8 +399,8 @@ that expect input images of size 224x224 pixels and images in tensor format.</p>
         <span class="n">params</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="c1"># Modify the classifier to adapt to the number of classes</span>
-    <span class="n">num_features</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">in_features</span>
-    <span class="n">features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="o">.</span><span class="n">children</span><span class="p">())[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># Remove the last layer</span>
+    <span class="n">num_features</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">in_features</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="o">.</span><span class="n">children</span><span class="p">())[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">num_features</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)])</span>
     <span class="n">model</span><span class="o">.</span><span class="n">classifier</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">features</span><span class="p">)</span>
 
@@ -434,7 +506,8 @@ probability distribution over all categories.</p>
 
             <details class="quote">
               <summary>Source code in <code>app/services/cnn/cnn.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">37</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
+<span class="normal">37</span>
 <span class="normal">38</span>
 <span class="normal">39</span>
 <span class="normal">40</span>
@@ -459,8 +532,7 @@ probability distribution over all categories.</p>
 <span class="normal">59</span>
 <span class="normal">60</span>
 <span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Performs image classification using a pre-trained VGG16 model modified for six specific categories.</span>
 <span class="sd">    This function processes an input image, applies a pre-trained model, and returns the predicted category and</span>

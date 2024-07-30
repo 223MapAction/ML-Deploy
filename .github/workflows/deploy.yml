@@ -15,4 +15,4 @@ jobs:
 
       - name: Deployment
         run: |
-          docker-compose -f _cid_pipeline.yaml up --build -d
+          docker-compose -f _cd_pipeline.yaml up --build -d

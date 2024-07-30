@@ -122,3 +122,5 @@ temp
 
 .venv/
 /.venv
+
+.cv_deploy.env

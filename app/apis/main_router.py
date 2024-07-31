@@ -1,18 +1,17 @@
-from fastapi import APIRouter, HTTPException, FastAPI, Query, WebSocket, WebSocketDisconnect, status
+from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect, status
 from fastapi.responses import JSONResponse
-from ..services import predict, contextualize, chat_bot, get_response, perform_prediction, fetch_contextual_information, celery_app
-from ..models import ImageModel
-from ..database import database
+from app.services import predict, get_response, perform_prediction, fetch_contextual_information, celery_app
+from app.models import ImageModel
+from database import database
 import json
 import requests
-from ..services.websockets import *
+from app.services.websockets import ConnectionManager
 
 manager = ConnectionManager()
 
 router = APIRouter()
 
 base_url = "http://139.144.63.238"
-
 
 @router.get('/')
 def index():
@@ -86,7 +85,7 @@ def index():
     #         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.websocket('ws/image/predict')
+@router.websocket('/ws/image/predict')
 async def prediction_endpoint(websocket: WebSocket):
     """
     WebSocket endpoint for predicting incident type based on an image.
@@ -110,7 +109,6 @@ async def prediction_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
         while True:
-
             data = await websocket.receive_json()
             image_path = data.get('image_name')
             sensitive_structures = data.get('sensitive_structures')
@@ -118,8 +116,8 @@ async def prediction_endpoint(websocket: WebSocket):
 
             response = requests.get(base_url + image_path)
             if response.status_code != 200:
-                raise HTTPException(
-                    status_code=500, detail=f"Failed to fetch image from {base_url + image_path}")
+                await websocket.send_json({"error": f"Failed to fetch image from {base_url + image_path}"})
+                continue
 
             image = response.content
 
@@ -136,11 +134,11 @@ async def prediction_endpoint(websocket: WebSocket):
 
             query = """
              INSERT INTO "Mapapi_prediction" (incident_id, incident_type, piste_solution, impact_potentiel, context)
-             VALUES (:incident_id, :incident_type :piste_solution, :impact_potentiel, :context);
+             VALUES (:incident_id, :incident_type, :piste_solution, :impact_potentiel, :context);
              """
             values = {
-                "incident_id": data.incident_id,
-                "incideent_type": prediction,
+                "incident_id": incident_id,
+                "incident_type": prediction,
                 "piste_solution": piste_solution,
                 "impact_potentiel": impact,
                 "context": get_context
@@ -156,6 +154,9 @@ async def prediction_endpoint(websocket: WebSocket):
                 "in_depth": impact,
                 "piste_solution": piste_solution
             })
+    except WebSocketDisconnect:
+        await manager.disconnect(websocket)
     except Exception as e:
         # Handle exceptions and close the WebSocket connection
         await websocket.close(code=status.WS_1002_PROTOCOL_ERROR)
+        await websocket.send_json({"error": str(e)})

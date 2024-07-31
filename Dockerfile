@@ -4,6 +4,9 @@ FROM python:3.10-slim
 # Set the working directory to /app
 WORKDIR /app
 
+# Copy the cv_model directory to the container
+COPY cv_model /app/cv_model
+
 # Copy the current directory contents into the container at /app
 COPY . /app
 

@@ -2,12 +2,13 @@ name: Publish Docker image
 
 on:
   workflow_dispatch:
+    branches:
+      - md-branch
 
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/md-branch' # This ensures the job runs only when the event is triggered on md-branch
     permissions:
       packages: write
       contents: read

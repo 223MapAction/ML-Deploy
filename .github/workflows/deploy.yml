@@ -9,10 +9,15 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
 
-      - name: Deployment
+      - name: Deploy using Docker Compose
         run: |
           docker-compose -f _cd_pipeline.yaml up --build -d
+        env:
+          # Define any additional environment variables needed here
+          MODEL_PATH: cv_model/TCM1.pth

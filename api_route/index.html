@@ -160,15 +160,15 @@
 
             <details class="quote">
               <summary>Source code in <code>app/apis/main_router.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
-<span class="normal">17</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="normal">24</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a greeting message indicating the API is operational.</span>
@@ -276,8 +276,7 @@
 
             <details class="quote">
               <summary>Source code in <code>app/apis/main_router.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
-<span class="normal"> 89</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 89</span>
 <span class="normal"> 90</span>
 <span class="normal"> 91</span>
 <span class="normal"> 92</span>
@@ -349,8 +348,7 @@
 <span class="normal">158</span>
 <span class="normal">159</span>
 <span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">websocket</span><span class="p">(</span><span class="s1">&#39;/ws/image/predict&#39;</span><span class="p">)</span>
+<span class="normal">161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">websocket</span><span class="p">(</span><span class="s1">&#39;ws/image/predict&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">prediction_endpoint</span><span class="p">(</span><span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    WebSocket endpoint for predicting incident type based on an image.</span>
@@ -374,6 +372,7 @@
     <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">websocket</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
             <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">receive_json</span><span class="p">()</span>
             <span class="n">image_path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image_name&#39;</span><span class="p">)</span>
             <span class="n">sensitive_structures</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sensitive_structures&#39;</span><span class="p">)</span>
@@ -381,8 +380,8 @@
 
             <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_url</span> <span class="o">+</span> <span class="n">image_path</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
-                <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send_json</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Failed to fetch image from </span><span class="si">{</span><span class="n">base_url</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">image_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
-                <span class="k">continue</span>
+                <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+                    <span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Failed to fetch image from </span><span class="si">{</span><span class="n">base_url</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">image_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="n">image</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
 
@@ -399,11 +398,11 @@
 
             <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">             INSERT INTO &quot;Mapapi_prediction&quot; (incident_id, incident_type, piste_solution, impact_potentiel, context)</span>
-<span class="s2">             VALUES (:incident_id, :incident_type, :piste_solution, :impact_potentiel, :context);</span>
+<span class="s2">             VALUES (:incident_id, :incident_type :piste_solution, :impact_potentiel, :context);</span>
 <span class="s2">             &quot;&quot;&quot;</span>
             <span class="n">values</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;incident_id&quot;</span><span class="p">:</span> <span class="n">incident_id</span><span class="p">,</span>
-                <span class="s2">&quot;incident_type&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">,</span>
+                <span class="s2">&quot;incident_id&quot;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">incident_id</span><span class="p">,</span>
+                <span class="s2">&quot;incideent_type&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">,</span>
                 <span class="s2">&quot;piste_solution&quot;</span><span class="p">:</span> <span class="n">piste_solution</span><span class="p">,</span>
                 <span class="s2">&quot;impact_potentiel&quot;</span><span class="p">:</span> <span class="n">impact</span><span class="p">,</span>
                 <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">get_context</span>
@@ -419,12 +418,9 @@
                 <span class="s2">&quot;in_depth&quot;</span><span class="p">:</span> <span class="n">impact</span><span class="p">,</span>
                 <span class="s2">&quot;piste_solution&quot;</span><span class="p">:</span> <span class="n">piste_solution</span>
             <span class="p">})</span>
-    <span class="k">except</span> <span class="n">WebSocketDisconnect</span><span class="p">:</span>
-        <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="n">websocket</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># Handle exceptions and close the WebSocket connection</span>
         <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">WS_1002_PROTOCOL_ERROR</span><span class="p">)</span>
-        <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send_json</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)})</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
